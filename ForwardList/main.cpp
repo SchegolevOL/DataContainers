@@ -65,33 +65,45 @@ public:
 	}
 	void insert(int index, int value)
 	{
-		Element* New = new Element(value);
-		Element* Temp = Head;
-		Element* Next = Temp->pNext;
-		for (size_t i = 0; i < index-1 && Temp->pNext != nullptr; i++)
+			
+		if (index == 0)
 		{
-			Temp = Next;
-			Next = Temp->pNext;
-		}
-		New->pNext = Next;
-		Temp->pNext = New;
+			this->push_front(value);
+		}else
+		{
+			Element* New = new Element(value);
+			Element* Back = Head;
+			Element* Next = Back->pNext;
+
+			for (size_t i = 0; i < index-1 && Back->pNext != nullptr; i++)
+			{
+				Back = Next;
+				Next = Back->pNext;
+			}
+			New->pNext = Next;
+			Back->pNext = New;
+		 }
 	}
 	void erase(int index)
 	{
-		Element* Temp = Head;
-		Element* Next = Temp->pNext;
-		size_t i;
-		for ( i = 0; i < index - 1 && Temp->pNext != nullptr; i++)
+		if (index == 0)
 		{
-			Temp = Next;
-			Next = Temp->pNext;
-
+			this->pop_front();
 		}
-		if (Temp->pNext!=nullptr)
+		else
 		{
-			Temp->pNext = Next->pNext;
+			Element* Temp = Head;
+			Element* Next = Temp->pNext;
+			for (size_t i = 0; i < index - 1 && Temp->pNext != nullptr; i++)
+			{
+				Temp = Next;
+				Next = Temp->pNext;
+			}
+			if (Temp->pNext != nullptr)
+			{
+				Temp->pNext = Next->pNext;
+			}
 		}
-		
 	}
 
 
@@ -132,10 +144,10 @@ int main()
 	list.pop_back();
 	cout << "------------------" << endl;
 	list.print();
-	list.insert(1, 111);
+	list.insert(0, 111);
 	cout << "------------------" << endl;
 	list.print();
-	list.erase(5);
+	list.erase(0);
 	cout << "------------------" << endl;
 	list.print();
 

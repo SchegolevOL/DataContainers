@@ -136,22 +136,26 @@ int main()
 		list.push_front(rand() % 100);
 	}
 	list.print();
-	list.push_back(101);
 	cout << "------------------" << endl;
+	list.push_back(101);	
 	list.print();
-	list.pop_front();
 	cout << "------------------" << endl;
-	list.print();
 	list.pop_back();
-	cout << "------------------" << endl;
 	list.print();
+	cout << "------------------" << endl;
+	list.push_front(111);	
+	list.print();
+	cout << "------------------" << endl;
+	list.pop_front();	
+	list.print();
+	cout << "------------------" << endl;
 	list.insert(3, 111);
-	cout << "------------------" << endl;
 	list.print();
+	cout << "------------------" << endl;	
 	list.erase(3);
-	cout << "------------------" << endl;
 	list.print();
-
+	cout << "------------------" << endl;
+	
 
 	return 0;
 }

@@ -69,7 +69,8 @@ public:
 		if (index == 0)
 		{
 			this->push_front(value);
-		}else
+		}
+		else
 		{
 			Element* New = new Element(value);
 			Element* Back = Head;
@@ -144,10 +145,10 @@ int main()
 	list.pop_back();
 	cout << "------------------" << endl;
 	list.print();
-	list.insert(0, 111);
+	list.insert(3, 111);
 	cout << "------------------" << endl;
 	list.print();
-	list.erase(0);
+	list.erase(3);
 	cout << "------------------" << endl;
 	list.print();
 

@@ -2,10 +2,19 @@
 #include <Windows.h>
 #include <string>
 #include <math.h>
+#include <time.h>
+#include <stdlib.h>
 
 #define tab "\t"
 
 using namespace std;
+using std::cin;
+using std::cout;
+using std::endl;
+
+class Element;
+class ForwardList;
+ForwardList operator+(ForwardList left, ForwardList right);
 
 
 
@@ -37,16 +46,22 @@ class ForwardList //односвязный список
 	Element* Head;
 	unsigned int size;//размер списка
 public:
+	//--------Geters---------
+
+	unsigned int get_size()
+	{
+		return size;
+	}
 
 	//----------Constructor----------
-	ForwardList()
+	/*ForwardList()
 	{
 		Head = nullptr;
 		size = 0;
 		cout << "LConstructor : "<< this << endl;
 		
-	}
-	ForwardList(int n)
+	}*/
+	ForwardList(unsigned int n=0)
 	{
 		Head = nullptr;
 		size = 0;
@@ -57,6 +72,27 @@ public:
 		cout << "NConstructor : " << this << endl;
 
 	}
+
+	ForwardList(const ForwardList& other)
+	{
+		Head = nullptr;
+		size = 0;
+		for (size_t i = 0; i < other.size; i++)
+		{
+			push_front(other[other.size-i-1]);
+		}
+		cout << "CopyConstructor:\t\t" << this << endl;
+	}
+	ForwardList(ForwardList&& other)noexcept
+	{
+		size = other.size;
+		Head = other.Head;
+
+		
+		other.Head = nullptr;
+		cout << "MoveConstructor" << this << endl;
+	}
+
 
 	~ForwardList() 
 	{
@@ -148,6 +184,40 @@ public:
 		cout << "Общее количество элементов списка : " << Head->count << endl;
 		cout << "Количество элементов списка : " << size<< endl;
 	}
+	/*void ForwardListRND( int begin, int end)
+	{
+		for (size_t i = 0; i < size; i++)
+		{
+			this[i] = rand() % (end - begin + 1) + begin;
+		}
+	}*/
+	void reverse(ForwardList& other)
+	{
+		for (size_t i = 0; i < other.get_size(); i++)
+		{
+			push_front(other[i]);
+		}
+		
+	}
+	void unique(ForwardList& other)
+	{
+		bool flag;
+		for (size_t i = 0; i < other.get_size(); i++)
+		{
+			flag = 0;
+			for (size_t j = 0; j < other.get_size(); j++)
+			{
+				if (other[i] == other[j]&&i!=j)
+				{
+					flag = 1;
+				}
+				
+			}
+			if (flag == 0)push_front(other[i]);			
+		}
+	}
+
+
 	//----------Operators----------
 	int& operator[](int n)
 	{
@@ -157,18 +227,26 @@ public:
 		for (size_t i = 0; i < n; i++)temp = temp->pNext;		
 		return temp->Data;
 	}
-
+	const int& operator[](int n)const
+	{
+		Element* temp = Head;
+		int data;
+		if (n == 0)return Head->Data;
+		for (size_t i = 0; i < n; i++)temp = temp->pNext;
+		return temp->Data;
+	}
 };
 
 //#define BASE CHECK
 //#define DESTRUCTOR_CHECK
-#define HOME_WORK_1
-
+//#define HOME_WORK_1
+//#define COPY_CONSTRACTOR
+//#define REVERSE
 int main()
 {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
-
+	srand(time(NULL));
 
 #ifdef BASE CHECK
 	int n;
@@ -223,10 +301,6 @@ int main()
 	//cout << "Список заполнен" << endl;
 	list.print();
 #endif // DESTRUCTOR_CHECK
-
-
-
-
 #ifdef HOME_WORK_1
 	int n;
 	cout << "Введите размер списка - "; cin >> n;
@@ -242,11 +316,60 @@ int main()
 	cout << endl;
 		
 #endif // HOME_WORK_1
-
-
-
-
-
-
+#ifdef COPY_CONSTRACTOR
+	ForwardList list1(5);
+	ForwardList list2(5);
+	for (size_t i = 0; i < 5; i++)
+	{
+		list1[i] = rand() % 100;
+	}
+	for (size_t i = 0; i < 5; i++)
+	{
+		list2[i] = rand() % 100;
+	}
+	list1.print();
+	cout << endl;
+	list2.print();
+	ForwardList list3 = list1+list2;
+	list3.print();
+#endif // COPY_CONSTRACTOR
+#ifdef REVERSE
+	ForwardList list4(3);
+	ForwardList list5(0);
+	for (size_t i = 0; i < 3; i++)
+	{
+		list4[i] = rand() % 100;
+	}
+	list4.print();
+	list5.reverse(list4);
+	list5.print();
+#endif // REVERSE
+	ForwardList list6(10);
+	ForwardList list7(0);
+	for (size_t i = 0; i < 10; i++)
+	{
+		list6[i] = rand() % 10;
+	}
+	list6.print();
+	list7.unique(list6);
+	list7.print();
 	return 0;
+}
+
+
+
+
+
+ForwardList operator+(ForwardList left, ForwardList right)
+{
+	ForwardList result(left.get_size() + right.get_size());
+	for (size_t i = 0; i < left.get_size(); i++)
+	{
+		result[i] = left[i];
+	}
+	for (size_t i = 0; i < right.get_size(); i++)
+	{
+		result[left.get_size()+i] = right[i];
+	}
+	return result;
 }

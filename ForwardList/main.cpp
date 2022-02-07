@@ -112,14 +112,15 @@ public:
 	//---------------Addingng elements-------------------
 	void push_front(int Data)
 	{
-		Element* New = new Element(Data);
+		/*Element* New = new Element(Data);
 		New->pNext = Head;
-		Head = New;
+		Head = New;*/
+		Head = new Element(Data, Head);
 		size++;
 	}
 	void push_back(int Data)
 	{
-		if (Head==nullptr)//проверяем является список пустым
+		/*if (Head == nullptr)//проверяем является список пустым
 			return push_front(Data);
 		Element* New = new Element(Data);//создаем новый элемент
 		Element* Temp = Head;//итератор
@@ -128,8 +129,16 @@ public:
 			Temp = Temp->pNext;
 		}		
 		Temp->pNext = New;//присоеденяем новый элемент к последнему
+		size++;*/
+		if (Head == nullptr)
+			return push_front(Data);
+		Element* Temp = Head;
+		while (Temp->pNext != nullptr)
+		{
+			Temp = Temp->pNext;
+		}
+		Temp->pNext = new Element(Data, nullptr);
 		size++;
-
 	}
 
 	//--------------Remaving elements--------------------
@@ -156,13 +165,20 @@ public:
 	}
 	void insert(int index, int Data)
 	{		
-		if (index == 0|| Head == nullptr) return push_front(Data);
+		/*if (index == 0|| Head == nullptr) return push_front(Data);
 		if (index > size)return;	
 		Element* New = new Element(Data);
 		Element* Temp = Head;
 		for (size_t i = 0; i < index-1; i++)Temp = Temp->pNext;
 		New->pNext = Temp->pNext;
 		Temp->pNext = New;
+		size++;*/
+
+		if (index == 0|| Head == nullptr) return push_front(Data);
+		if (index > size)return;		
+		Element* Temp = Head;
+		for (size_t i = 0; i < index-1; i++)Temp = Temp->pNext;
+		Temp->pNext = new Element(Data,Temp->pNext);
 		size++;
 	}
 	void erase(int index)
@@ -201,8 +217,7 @@ public:
 		for (size_t i = 0; i < other.get_size(); i++)
 		{
 			push_front(other[i]);
-		}
-		
+		}		
 	}
 	/*void reverse()
 	{

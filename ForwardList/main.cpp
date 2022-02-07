@@ -54,17 +54,16 @@ public:
 	}
 
 	//----------Constructor----------
-	/*ForwardList()
+	ForwardList()
 	{
 		Head = nullptr;
 		size = 0;
 		cout << "LConstructor : "<< this << endl;
 		
-	}*/
-	ForwardList(unsigned int n=0)
+	}
+	ForwardList(unsigned int n): ForwardList()
 	{
-		Head = nullptr;
-		size = 0;
+		
 		for (size_t i = 0; i < n; i++)
 		{
 			push_front(0);
@@ -73,10 +72,8 @@ public:
 
 	}
 
-	ForwardList(const ForwardList& other)
+	ForwardList(const ForwardList& other) : ForwardList()
 	{
-		Head = nullptr;
-		size = 0;
 		for (size_t i = 0; i < other.size; i++)
 		{
 			push_front(other[other.size-i-1]);
@@ -92,7 +89,15 @@ public:
 		other.Head = nullptr;
 		cout << "MoveConstructor" << this << endl;
 	}
-
+	ForwardList(const initializer_list<int>& il): ForwardList()
+	{
+		int size_il = sizeof(il) / sizeof(int);
+		for (int const* it = il.end()-1; it!=il.begin()-1;it--)
+		{
+			push_front(*it);
+		}
+		
+	}
 
 	~ForwardList() 
 	{
@@ -199,6 +204,15 @@ public:
 		}
 		
 	}
+	/*void reverse()
+	{
+		int tmp;
+		for (size_t i = 0; i < size; i++)
+		{
+			tmp = this[i];
+
+		}
+	}*/
 	void unique(ForwardList& other)
 	{
 		bool flag;
@@ -222,19 +236,19 @@ public:
 	int& operator[](int n)
 	{
 		Element* temp = Head;
-		int data;
-		if (n==0)return Head->Data;
+		
 		for (size_t i = 0; i < n; i++)temp = temp->pNext;		
 		return temp->Data;
 	}
 	const int& operator[](int n)const
 	{
 		Element* temp = Head;
-		int data;
-		if (n == 0)return Head->Data;
+		
 		for (size_t i = 0; i < n; i++)temp = temp->pNext;
 		return temp->Data;
 	}
+
+
 };
 
 //#define BASE CHECK
@@ -242,6 +256,8 @@ public:
 //#define HOME_WORK_1
 //#define COPY_CONSTRACTOR
 //#define REVERSE
+//#define UNIQUE
+#define HOME_WORK_2
 int main()
 {
 	SetConsoleCP(1251);
@@ -344,6 +360,7 @@ int main()
 	list5.reverse(list4);
 	list5.print();
 #endif // REVERSE
+#ifdef UNIQUE
 	ForwardList list6(10);
 	ForwardList list7(0);
 	for (size_t i = 0; i < 10; i++)
@@ -353,6 +370,14 @@ int main()
 	list6.print();
 	list7.unique(list6);
 	list7.print();
+#endif // UNIQUE
+#ifdef HOME_WORK_2
+	ForwardList list7 = { 3,5,8,13,21 };
+	list7.print();
+#endif // HOME_WORK_2
+
+
+
 	return 0;
 }
 

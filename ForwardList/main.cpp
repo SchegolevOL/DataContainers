@@ -15,7 +15,7 @@ using std::endl;
 class Element;
 class ForwardList;
 ForwardList operator+(ForwardList left, ForwardList right);
-
+std::ostream& operator<<(std::ostream& os, ForwardList& fl);
 
 
 class Element
@@ -24,6 +24,19 @@ class Element
 	Element* pNext;
 	static int count;
 public:
+	int get_Data()
+	{
+		return Data;
+	}
+	int get_count()
+	{
+		return count;
+	}
+	Element* get_pNext()
+	{
+		return pNext;
+	}
+
 	Element(int Data, Element* pNext = nullptr) :Data(Data), pNext(pNext) 
 	{
 		cout << "EConstructor : " << this << endl; 
@@ -51,6 +64,10 @@ public:
 	unsigned int get_size()
 	{
 		return size;
+	}
+	Element* get_Head()
+	{
+		return Head;
 	}
 
 	//----------Constructor----------
@@ -202,10 +219,10 @@ public:
 			cout << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
 			Temp = Temp->pNext;//переход на следующий элемент
 		}
-		cout << "Общее количество элементов списка : " << Head->count << endl;
+		cout << "Общее количество элементов списков : " << Head->count << endl;
 		cout << "Количество элементов списка : " << size<< endl;
 	}
-	/*void ForwardListRND( int begin, int end)
+	/*void fl_rnd( int begin, int end)
 	{
 		for (size_t i = 0; i < size; i++)
 		{
@@ -221,12 +238,9 @@ public:
 	}
 	/*void reverse()
 	{
-		int tmp;
-		for (size_t i = 0; i < size; i++)
-		{
-			tmp = this[i];
-
-		}
+		ForwardList other(0);
+		other.reverse(*this);
+		this = other;
 	}*/
 	void unique(ForwardList& other)
 	{
@@ -262,7 +276,15 @@ public:
 		for (size_t i = 0; i < n; i++)temp = temp->pNext;
 		return temp->Data;
 	}
-
+	ForwardList& operator = (ForwardList& other)
+	{
+		this->Head=other.Head;
+		this->size = other.size;
+		other.Head = nullptr;
+		other.size = 0;
+		return *this;
+	}
+	
 
 };
 
@@ -389,6 +411,8 @@ int main()
 #ifdef HOME_WORK_2
 	ForwardList list7 = { 3,5,8,13,21 };
 	list7.print();
+	cout << endl;
+	cout << list7;
 #endif // HOME_WORK_2
 
 
@@ -396,8 +420,18 @@ int main()
 	return 0;
 }
 
-
-
+//std::ostream& operator<<(std::ostream& os,  ForwardList& fl)
+//{
+//	ForwardList* temp = fl.get_Head();
+//
+//	while (temp)
+//	{
+//		os << o;
+//	}
+//	
+//	 
+//	 return os;
+//}
 
 
 ForwardList operator+(ForwardList left, ForwardList right)
@@ -412,4 +446,20 @@ ForwardList operator+(ForwardList left, ForwardList right)
 		result[left.get_size()+i] = right[i];
 	}
 	return result;
+}
+std::ostream& operator<<(std::ostream& os, ForwardList& fl)
+{
+	Element* temp = fl.get_Head();
+
+	while (temp)
+	{
+		os << temp->get_Data() << tab;
+		temp = temp->get_pNext();
+	}
+	os << endl;
+	
+	os << "Количество элементов списка : " << fl.get_size() << endl;
+
+
+	return os;
 }

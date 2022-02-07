@@ -154,7 +154,7 @@ public:
 		{
 			Temp = Temp->pNext;
 		}
-		Temp->pNext = new Element(Data, nullptr);
+		Temp->pNext = new Element(Data);
 		size++;
 	}
 
@@ -210,7 +210,7 @@ public:
 		delete	Ell;
 		size--;
 	}
-	//Metods
+	//----------Metods----------
 	void print()const
 	{
 		Element* Temp = Head;//- итератор- это указатель при
@@ -420,19 +420,6 @@ int main()
 	return 0;
 }
 
-//std::ostream& operator<<(std::ostream& os,  ForwardList& fl)
-//{
-//	ForwardList* temp = fl.get_Head();
-//
-//	while (temp)
-//	{
-//		os << o;
-//	}
-//	
-//	 
-//	 return os;
-//}
-
 
 ForwardList operator+(ForwardList left, ForwardList right)
 {
@@ -447,7 +434,7 @@ ForwardList operator+(ForwardList left, ForwardList right)
 	}
 	return result;
 }
-std::ostream& operator<<(std::ostream& os, ForwardList& fl)
+std::ostream& operator <<(std::ostream& os, ForwardList& fl)
 {
 	Element* temp = fl.get_Head();
 

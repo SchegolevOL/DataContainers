@@ -17,6 +17,7 @@ class ForwardList;
 ForwardList operator+(ForwardList left, ForwardList right);
 std::ostream& operator<<(std::ostream& os, ForwardList& fl);
 
+//#define OLD_PRINT
 
 class Element
 {
@@ -24,15 +25,12 @@ class Element
 	Element* pNext;
 	static int count;
 public:
-	int get_Data()
+	int get_Data()const
 	{
 		return Data;
 	}
-	int get_count()
-	{
-		return count;
-	}
-	Element* get_pNext()
+	
+	Element* get_pNext()const
 	{
 		return pNext;
 	}
@@ -50,9 +48,56 @@ public:
 		
 	}
 	friend class ForwardList;// дружественный класс
+	friend class Iterator;
 };
 
 int Element::count = 0;
+
+class Iterator
+{
+	Element* Temp;
+public:
+	Iterator(Element* Temp = nullptr) :Temp(Temp)
+	{
+		cout << "ItConstructor" << this << endl;
+	}
+	~Iterator()
+	{
+		cout << "ItDestructor" << this << endl;
+	}
+
+	Iterator& operator ++()//Prefix Increment ++a //for 
+	{
+		Temp = Temp->pNext;
+		return *this;
+	}
+	Iterator operator ++(int)//Postfix Increment a++ //for 
+	{
+		Iterator old = *this;// сохроняем старое значение итератора
+		Temp = Temp->pNext;//изменяем итератор
+		return old;//возвращаем старое значение 
+	}
+
+
+	bool operator ==(const Iterator& other)const//for 
+	{
+		return this->Temp == other.Temp;
+	}
+	bool operator !=(const Iterator& other)const
+	{
+		return this->Temp != other.Temp;
+	}
+	int& operator*()//for 
+	{
+		return Temp->Data;
+	}
+	const int& operator*()const//for 
+	{
+		return Temp->Data;
+	}
+};
+
+
 
 class ForwardList //односвязный список
 {
@@ -61,11 +106,11 @@ class ForwardList //односвязный список
 public:
 	//--------Geters---------
 
-	unsigned int get_size()
+	unsigned int get_size()const
 	{
 		return size;
 	}
-	Element* get_Head()
+	Element* get_Head()const
 	{
 		return Head;
 	}
@@ -108,7 +153,16 @@ public:
 	}
 	ForwardList(const initializer_list<int>& il): ForwardList()
 	{
-		int size_il = sizeof(il) / sizeof(int);
+		//il.begin() - возвращает итератор на начало контейнера
+		//il.end()  - возвращает итератор на конец контейнера
+		cout << typeid(il.begin()).name() << endl;
+		//const int* - константный указатель (НЕ изменяется адрес)
+		//int const* - указатель на константу (НЕ изменяется значение по адресу)
+		/*for (int const* it = il.begin(); it != il.end(); it++)
+		{
+			//it - iterator
+			push_back(*it);
+		}*/
 		for (int const* it = il.end()-1; it!=il.begin()-1;it--)
 		{
 			push_front(*it);
@@ -152,7 +206,7 @@ public:
 		Element* Temp = Head;
 		while (Temp->pNext != nullptr)
 		{
-			Temp = Temp->pNext;
+			++Temp;
 		}
 		Temp->pNext = new Element(Data);
 		size++;
@@ -174,7 +228,7 @@ public:
 		Element* Temp = Head;
 		while (Temp->pNext->pNext != nullptr)
 		{
-			Temp = Temp->pNext;
+			++Temp;
 		}
 		delete Temp->pNext;
 		Temp->pNext = nullptr;	
@@ -194,7 +248,7 @@ public:
 		if (index == 0|| Head == nullptr) return push_front(Data);
 		if (index > size)return;		
 		Element* Temp = Head;
-		for (size_t i = 0; i < index-1; i++)Temp = Temp->pNext;
+		for (size_t i = 0; i < index-1; i++)++Temp;
 		Temp->pNext = new Element(Data,Temp->pNext);
 		size++;
 	}
@@ -204,7 +258,7 @@ public:
 		if (index > size)return;
 		Element* Temp = Head;
 		Element* Ell;
-		for (size_t i = 0; i < index - 1; i++)Temp = Temp->pNext;
+		for (size_t i = 0; i < index - 1; i++)++Temp;
 		Ell = Temp->pNext;
 		Temp->pNext = Temp->pNext->pNext;
 		delete	Ell;
@@ -213,22 +267,31 @@ public:
 	//----------Metods----------
 	void print()const
 	{
+#ifdef OLD_PRINT
 		Element* Temp = Head;//- итератор- это указатель при
-		while (Temp)
+		for (size_t i = 0; i < size; i++)
 		{
 			cout << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
 			Temp = Temp->pNext;//переход на следующий элемент
-		}
+		}			
 		cout << "Общее количество элементов списков : " << Head->count << endl;
 		cout << "Количество элементов списка : " << size<< endl;
+#endif // OLD_PRINT
+		for (Element* Temp = Head; Temp; Temp = Temp->pNext)
+		{
+			cout << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
+		}
+		cout << "Общее количество элементов списков : " << Head->count << endl;
+		cout << "Количество элементов списка : " << size << endl;
+
 	}
-	/*void fl_rnd( int begin, int end)
+	void fl_rnd( int begin, int end)
 	{
 		for (size_t i = 0; i < size; i++)
 		{
-			this[i] = rand() % (end - begin + 1) + begin;
+			(* this)[i] = rand() % (end - begin + 1) + begin;
 		}
-	}*/
+	}
 	void reverse(ForwardList& other)
 	{
 		for (size_t i = 0; i < other.get_size(); i++)
@@ -236,12 +299,16 @@ public:
 			push_front(other[i]);
 		}		
 	}
-	/*void reverse()
+	void reverse()
 	{
-		ForwardList other(0);
-		other.reverse(*this);
-		this = other;
-	}*/
+		int data;
+		for (size_t i = 0; i < size/2; i++)
+		{
+			data = (*this)[i];
+			(*this)[i] = (*this)[size - 1 - i];
+			(*this)[size - 1 - i] = data;
+		}
+	}
 	void unique(ForwardList& other)
 	{
 		bool flag;
@@ -259,21 +326,30 @@ public:
 			if (flag == 0)push_front(other[i]);			
 		}
 	}
-
+	void unique()
+	{
+		for (size_t i = 0; i < size; i++)
+		{
+			for (size_t j = 0; j < size; j++)
+			{
+				if ((*this)[i] == (*this)[j] && i != j)erase(j);
+			}
+		}
+	}
 
 	//----------Operators----------
 	int& operator[](int n)
 	{
 		Element* temp = Head;
 		
-		for (size_t i = 0; i < n; i++)temp = temp->pNext;		
+		for (size_t i = 0; i < n; i++)++temp;		
 		return temp->Data;
 	}
 	const int& operator[](int n)const
 	{
 		Element* temp = Head;
 		
-		for (size_t i = 0; i < n; i++)temp = temp->pNext;
+		for (size_t i = 0; i < n; i++)++temp;
 		return temp->Data;
 	}
 	ForwardList& operator = (ForwardList& other)
@@ -284,7 +360,15 @@ public:
 		other.size = 0;
 		return *this;
 	}
-	
+	Iterator begin()//for 
+	{
+		return this->Head;
+	}
+	Iterator end()//for
+	{
+		return nullptr;
+	}
+
 
 };
 
@@ -294,7 +378,10 @@ public:
 //#define COPY_CONSTRACTOR
 //#define REVERSE
 //#define UNIQUE
-#define HOME_WORK_2
+//#define HOME_WORK_2
+//#define RANGE_BASE_FORARRAY
+
+
 int main()
 {
 	SetConsoleCP(1251);
@@ -387,14 +474,15 @@ int main()
 	list3.print();
 #endif // COPY_CONSTRACTOR
 #ifdef REVERSE
-	ForwardList list4(3);
+	ForwardList list4(10);
 	ForwardList list5(0);
-	for (size_t i = 0; i < 3; i++)
-	{
-		list4[i] = rand() % 100;
-	}
+	list4.fl_rnd(1, 10);
 	list4.print();
 	list5.reverse(list4);
+	list5.print();
+	list5.reverse();
+	list5.print();
+	list5.unique();
 	list5.print();
 #endif // REVERSE
 #ifdef UNIQUE
@@ -413,8 +501,31 @@ int main()
 	list7.print();
 	cout << endl;
 	cout << list7;
+	for (Iterator it = list7.get_Head(); it != nullptr; it++)
+	{
+		cout << *it << tab;
+	}
 #endif // HOME_WORK_2
+#ifdef RANGE_BASE_FORARRAY
+	int arr[] = { 3,5,8,13,21 };
+	/*for (size_t i = 0; i < sizeof(arr)/sizeof(int); i++)
+	{
+		cout << arr[i] << tab;
+	}
+	cout << endl;*/
+	for (int i : arr)//
+	{
+		cout << i << tab;
+	}
+	cout << endl;
+#endif // RANGE_BASE_FORARRAY
 
+	ForwardList list9 = { 3,5,8,13,21 };
+	for (int i : list9)
+	{
+		cout << i << tab;
+	}
+	cout << endl;
 
 
 	return 0;
@@ -434,6 +545,7 @@ ForwardList operator+(ForwardList left, ForwardList right)
 	}
 	return result;
 }
+
 std::ostream& operator <<(std::ostream& os, ForwardList& fl)
 {
 	Element* temp = fl.get_Head();
@@ -443,10 +555,10 @@ std::ostream& operator <<(std::ostream& os, ForwardList& fl)
 		os << temp->get_Data() << tab;
 		temp = temp->get_pNext();
 	}
-	os << endl;
+	os << endl; 
 	
 	os << "Количество элементов списка : " << fl.get_size() << endl;
-
+	
 
 	return os;
 }

@@ -25,11 +25,71 @@ class List
 			cout << "EDestructor : \t" << this << endl;
 		}
 		friend class List;
+		friend class Iterator;
 	}*Head, *Tail;//Element* Temp; Element* Tail; тоже самое
+	class Iterator
+	{
+		Element* Temp;
+	public:
+		Iterator(Element* Temp = nullptr) :Temp(Temp)
+		{
+			cout << "ItConstructor" << this << endl;
+		}
+		~Iterator()
+		{
+			cout << "ItDestructor" << this << endl;
+		}
+		Iterator& operator ++()//Prefix  
+		{
+			Temp = Temp->pNext;
+			return *this;
+		}
+		Iterator operator ++(int)//Postfix 
+		{
+			Iterator old = *this;
+			Temp = Temp->pNext;
+			return old; 
+		}
+		Iterator& operator --()//Prefix  
+		{
+			Temp = Temp->pPrev;
+			return *this;
+		}
+		Iterator operator --(int)//Postfix 
+		{
+			Iterator old = *this;
+			Temp = Temp->pPrev;
+			return old;
+		}
+		bool operator ==(const Iterator& other)const//for 
+		{
+			return this->Temp == other.Temp;
+		}
+		bool operator !=(const Iterator& other)const
+		{
+			return this->Temp != other.Temp;
+		}
+		int& operator*()//for 
+		{
+			return Temp->Data;
+		}
+		const int& operator*()const//for 
+		{
+			return Temp->Data;
+		}
 	
+	};
+
+
+
 	size_t size;
 
 public:
+	//----------Gerters-----------
+	size_t get_size()
+	{
+		return size;
+	}
 	//----------Constructor----------
 	List()
 	{
@@ -37,6 +97,30 @@ public:
 		Tail = nullptr;
 		size = 0;
 		cout << "LConstructor : " << this << endl;
+	}
+	List(const List& other) : List()
+	{
+		for (size_t i = 0; i < other.size; i++)
+		{
+			push_front(other[other.size - i - 1]);
+		}
+		cout << "CopyConstructor:\t\t" << this << endl;
+	}
+	List(List&& other)noexcept
+	{
+		size = other.size;
+		Head = other.Head;
+		Tail = other.Tail;
+		other.Head = nullptr;
+		cout << "MoveConstructor" << this << endl;
+	}
+	List(const initializer_list<int>& il) : List()
+	{
+		for (int const* it = il.end() - 1; it != il.begin() - 1; it--)
+		{
+			push_front(*it);
+		}
+
 	}
 	//----------Destructor----------
 	~List()
@@ -80,7 +164,7 @@ public:
 	}
 	void insert(int index, int Data)
 	{		
-		if (index > size+1)return;
+		if (index > size)return;
 		if (Head == nullptr && Tail == nullptr)
 		{
 			Head = Tail = new Element(Data, Head);
@@ -88,7 +172,7 @@ public:
 			return;
 		}
 		if (index == 0) return push_front(Data);
-		
+		if (index == size)return push_back(Data);
 		if (index<=size/2)
 		{
 			Element* Temp = Head;
@@ -148,6 +232,7 @@ public:
 			return;
 		}
 		if (index == 0) return pop_front();
+		if (index == size - 1) return pop_back();
 		if (index > size)return;
 			
 		if (index <= size / 2)
@@ -161,7 +246,7 @@ public:
 		else
 		{
 			Element* Temp = Tail;
-			for (size_t i = size-1; i > index; i--)
+			for (size_t i = size; i > index+1; i--)
 				Temp = Temp->pPrev;
 			Temp->pNext->pPrev = Temp->pPrev;
 			Temp->pPrev->pNext = Temp->pNext;
@@ -194,7 +279,49 @@ public:
 
 	}
 	//----------Operators----------
-
+	int& operator[](int n)
+	{
+		if (n<=size/2)
+		{
+			Element* Temp = Head;
+			for (size_t i = 0; i < n; i++)
+				Temp = Temp->pNext;;
+			return Temp->Data;
+		}
+		else
+		{
+			Element* Temp = Tail;
+			for (size_t i = size; i > n + 1; i--)
+				Temp = Temp->pPrev;;
+			return Temp->Data;
+		}
+		
+	}
+	const int& operator[](int n)const
+	{
+		if (n <= size / 2)
+		{
+			Element* Temp = Head;
+			for (size_t i = 0; i < n; i++)
+				Temp = Temp->pNext;;
+			return Temp->Data;
+		}
+		else
+		{
+			Element* Temp = Tail;
+			for (size_t i = size; i > n + 1; i--)
+				Temp = Temp->pPrev;;
+			return Temp->Data;
+		}
+	}
+	Iterator begin()//for 
+	{
+		return this->Head;
+	}
+	Iterator end()//for
+	{
+		return nullptr;
+	}
 };
 
 
@@ -223,11 +350,19 @@ int main()
 	list.push_front(25);
 	list.push_back(100);
 	list.print();
-	list.insert(8,1000);
+	list.insert(7,1000);
 	list.print();
 	list.erase(1);
 	list.print();
-	list.erase(4);
+	list.erase(5);
 	list.print();
+	for (size_t i = 0; i < list.get_size(); i++)
+	{
+		cout << list[i] << tab;
+	}
+	cout << endl;
+	List list2 = { 3, 5, 8, 13, 21 };
+	for (int i : list2)cout << i << tab; cout << endl;
+
 	return 0;
 }

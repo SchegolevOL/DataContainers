@@ -27,15 +27,29 @@ class List
 		friend class List;
 		friend class Iterator;
 	}*Head, *Tail;//Element* Temp; Element* Tail; тоже самое
+
+
+public: 
 	class Iterator
 	{
 		Element* Temp;
 	public:
+
+		Element* get_Temp()
+		{
+			return Temp;
+		}
+		void set_Temp(Element* (Temp))
+		{
+			this-> Temp = Temp;
+		}
+
+
 		Iterator(Element* Temp = nullptr) :Temp(Temp)
 		{
 			cout << "ItConstructor" << this << endl;
 		}
-		~Iterator()
+		virtual ~Iterator()
 		{
 			cout << "ItDestructor" << this << endl;
 		}
@@ -77,11 +91,73 @@ class List
 		{
 			return Temp->Data;
 		}
-	
+		operator bool()const
+		{
+			return Temp;
+		}
+	};
+	class ReverseIterator: public Iterator
+	{
+		//Element* Temp;
+	public:
+
+		ReverseIterator(Element* Temp) : Iterator(Temp) 
+		{
+			cout << "RItConstructor" << this << endl;
+		}
+
+		~ReverseIterator()
+		{
+			cout << "ItDestructor" << this << endl;
+		}
+
+		ReverseIterator& operator ++()//Prefix  
+		{
+			set_Temp(get_Temp()->pPrev);
+			return *this;
+		}
+		ReverseIterator operator ++(int)//Postfix 
+		{
+			ReverseIterator old = *this;
+			set_Temp(get_Temp()->pPrev);
+			return old;
+		}
+
+		ReverseIterator& operator --()//Prefix  
+		{
+			set_Temp(get_Temp()->pNext);
+			return *this;
+		}
+		ReverseIterator operator --(int)//Postfix 
+		{
+			ReverseIterator old = *this;
+			set_Temp(get_Temp()->pNext);
+			return old; 
+		}
+		
+		/*bool operator ==(const ReverseIterator& other)const//for 
+		{
+			return this->Temp == other.Temp;
+		}
+		bool operator !=(const ReverseIterator& other)const
+		{
+			return this->Temp != other.Temp;
+		}
+		int& operator*()//for 
+		{
+			return Temp->Data;
+		}
+		const int& operator*()const//for 
+		{
+			return Temp->Data;
+		}
+		operator bool()const
+		{
+			return Temp;
+		}*/
 	};
 
-
-
+private:
 	size_t size;
 
 public:
@@ -116,9 +192,9 @@ public:
 	}
 	List(const initializer_list<int>& il) : List()
 	{
-		for (int const* it = il.end() - 1; it != il.begin() - 1; it--)
+		for (int const* it = il.begin(); it != il.end(); ++it)
 		{
-			push_front(*it);
+			push_back(*it);
 		}
 
 	}
@@ -135,14 +211,16 @@ public:
 	//---------------Addingng elements-------------------
 	void push_front(int Data)
 	{
-		if (Head == nullptr && Tail == nullptr)
+		/*if (Head == nullptr && Tail == nullptr)
 		{
 			Head = Tail = new Element(Data, Head);
 			size++;
 			return;
 		}
-		Head = Head->pPrev =  new Element(Data, Head);
+		Head = Head->pPrev =  new Element(Data, Head);*/
 		
+		Head == nullptr && Tail == nullptr? Head = Tail = new Element(Data, Head): Head = Head->pPrev = new Element(Data, Head);
+		size++;
 
 		/*Element* New = new Element(Data);
 		New->pNext = Head;
@@ -153,17 +231,20 @@ public:
 	}
 	void push_back(int Data)
 	{
-		if (Head == nullptr && Tail == nullptr)
+		/*if (Head == nullptr && Tail == nullptr)
 		{
 			Head = Tail = new Element(Data, Head);
 			size++;
 			return;
 		}
 		Tail = Tail->pNext = new Element(Data,nullptr,Tail);
+		size++;*/
+		Head == nullptr && Tail == nullptr? Head = Tail = new Element(Data, Head): Tail = Tail->pNext = new Element(Data, nullptr, Tail);
 		size++;
 	}
 	void insert(int index, int Data)
-	{		
+	{	
+
 		if (index > size)return;
 		if (Head == nullptr && Tail == nullptr)
 		{
@@ -322,19 +403,31 @@ public:
 	{
 		return nullptr;
 	}
+
+
+	ReverseIterator rbegin()//for 
+	{
+		return this->Tail;
+	}
+	ReverseIterator rend()//for
+	{
+		return nullptr;
+	}
 };
 
 
-
+#define BASE_CHEK
 int main()
 {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
+#ifdef BASE_CHEK
+
 	List list;
 	list.push_front(10);
 	list.push_front(15);
 	list.push_front(25);
-	list.push_back(100);	
+	list.push_back(100);
 	list.print();
 	list.reverse_print();
 
@@ -350,19 +443,29 @@ int main()
 	list.push_front(25);
 	list.push_back(100);
 	list.print();
-	list.insert(7,1000);
+	list.insert(7, 1000);
 	list.print();
 	list.erase(1);
 	list.print();
 	list.erase(5);
 	list.print();
-	for (size_t i = 0; i < list.get_size(); i++)
+	/*for (size_t i = 0; i < list.get_size(); i++)
 	{
 		cout << list[i] << tab;
-	}
+	}*/
 	cout << endl;
 	List list2 = { 3, 5, 8, 13, 21 };
 	for (int i : list2)cout << i << tab; cout << endl;
+#endif //  BASE_CHEK
+	List list3 = { 3, 5, 8, 13, 21 };
+	list3.print();
+	for (int i : list3)cout << i << tab; 
+	cout << endl;
 
+	for (List :: ReverseIterator it = list3.rbegin(); it ; ++it)
+	{
+		cout << *it << tab;
+	}
+	cout << endl;
 	return 0;
 }

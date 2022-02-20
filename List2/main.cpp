@@ -30,7 +30,8 @@ class List
 
 
 public: 
-	class BIterator
+
+	class Iterator
 	{
 		Element* Temp;
 	public:
@@ -41,21 +42,43 @@ public:
 		}
 		void set_Temp(Element* (Temp))
 		{
-			this->Temp = Temp;
+			this-> Temp = Temp;
 		}
-		BIterator(Element* Temp = nullptr) :Temp(Temp)
+		Iterator(Element* Temp = nullptr) :Temp(Temp)
 		{
 			cout << "ItConstructor" << this << endl;
 		}
-		virtual ~BIterator()
+		virtual ~Iterator()
 		{
 			cout << "ItDestructor" << this << endl;
 		}
-		bool operator ==(const BIterator& other)const//for 
+		Iterator& operator ++()//Prefix  
+		{
+			Temp = Temp->pNext;
+			return *this;
+		}
+		Iterator operator ++(int)//Postfix 
+		{
+			Iterator old = *this;
+			Temp = Temp->pNext;
+			return old; 
+		}
+		Iterator& operator --()//Prefix  
+		{
+			Temp = Temp->pPrev;
+			return *this;
+		}
+		Iterator operator --(int)//Postfix 
+		{
+			Iterator old = *this;
+			Temp = Temp->pPrev;
+			return old;
+		}
+		bool operator ==(const Iterator& other)const//for 
 		{
 			return this->Temp == other.Temp;
 		}
-		bool operator !=(const BIterator& other)const
+		bool operator !=(const Iterator& other)const
 		{
 			return this->Temp != other.Temp;
 		}
@@ -72,51 +95,12 @@ public:
 			return Temp;
 		}
 	};
-
-
-
-
-	class Iterator: public BIterator
-	{
-
-		Iterator(Element* Temp = nullptr) :BIterator(Temp)
-		{
-			cout << "ItConstructor" << this << endl;
-		}
-		virtual ~Iterator()
-		{
-			cout << "ItDestructor" << this << endl;
-		}
-		Iterator& operator ++()//Prefix  
-		{
-			set_Temp(get_Temp()->pNext);
-			return *this;
-		}
-		Iterator operator ++(int)//Postfix 
-		{
-			Iterator old = *this;
-			set_Temp(get_Temp()->pNext);
-			return old; 
-		}
-		Iterator& operator --()//Prefix  
-		{
-			set_Temp(get_Temp()->pPrev);
-			return *this;
-		}
-		Iterator operator --(int)//Postfix 
-		{
-			Iterator old = *this;
-			set_Temp(get_Temp()->pPrev);
-			return old;
-		}
-		
-	};
-	class ReverseIterator: public BIterator
+	class ReverseIterator: public Iterator
 	{
 		//Element* Temp;
 	public:
 
-		ReverseIterator(Element* Temp) : BIterator(Temp) 
+		ReverseIterator(Element* Temp) : Iterator(Temp) 
 		{
 			cout << "RItConstructor" << this << endl;
 		}
@@ -171,10 +155,10 @@ public:
 			return Temp;
 		}*/
 	};
-	class ConstIterator:public BIterator
+	class ConstIterator:public Iterator
 	{
 	public:
-		const ConstIterator(Element* Temp): BIterator(Temp)
+		const ConstIterator(Element* Temp): Iterator(Temp)
 		{
 			cout << "CItConstructor" << this << endl;
 		}
@@ -186,10 +170,10 @@ public:
 
 	};
 
-	class ConstReverseIterator :public BIterator
+	class ConstReverseIterator :public Iterator
 	{
 	public:
-		const ConstReverseIterator(Element* Temp) : BIterator(Temp)
+		const ConstReverseIterator(Element* Temp) : Iterator(Temp)
 		{
 			cout << "CRItConstructor" << this << endl;
 		}

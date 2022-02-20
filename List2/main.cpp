@@ -156,6 +156,41 @@ public:
 			return Temp;
 		}*/
 	};
+	class ConstIterator:public Iterator
+	{
+	public:
+		const ConstIterator(Element* Temp): Iterator(Temp)
+		{
+			cout << "CItConstructor" << this << endl;
+		}
+
+		~ConstIterator()
+		{
+			cout << "ItDestructor" << this << endl;
+		}
+
+	};
+
+	class ConstReverseIterator :public Iterator
+	{
+	public:
+		const ConstReverseIterator(Element* Temp) : Iterator(Temp)
+		{
+			cout << "CRItConstructor" << this << endl;
+		}
+
+		~ConstReverseIterator()
+		{
+			cout << "ItDestructor" << this << endl;
+		}
+
+	};
+
+
+
+
+
+
 
 private:
 	size_t size;

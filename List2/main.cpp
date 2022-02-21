@@ -263,6 +263,7 @@ public:
 	List(List&& other)noexcept
 	{
 		size = other.size;
+
 		Head = other.Head;
 		Tail = other.Tail;
 		other.Head = nullptr;

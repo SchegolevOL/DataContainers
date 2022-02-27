@@ -120,7 +120,10 @@ public:
 	{
 		Head = nullptr;
 		size = 0;
-		cout << "LConstructor : "<< this << endl;
+#ifdef DEBUG
+		cout << "LConstructor : " << this << endl;
+#endif // DEBUG
+
 		
 	}
 	ForwardList(unsigned int n): ForwardList()
@@ -170,7 +173,7 @@ public:
 		
 	}
 
-	~ForwardList() 
+	virtual ~ForwardList() 
 	{
 		while (Head)
 		{
@@ -265,7 +268,7 @@ public:
 		size--;
 	}
 	//----------Metods----------
-	void print()const
+	virtual void print()const
 	{
 #ifdef OLD_PRINT
 		Element* Temp = Head;//- итератор- это указатель при
@@ -371,6 +374,32 @@ public:
 
 
 };
+
+class Stack :ForwardList
+{
+
+public:
+	Stack() :ForwardList() {}	
+	Stack(unsigned int n) :ForwardList(n) {}
+	Stack(const Stack& other) :ForwardList(other) {}
+	Stack(Stack&& other) :ForwardList(other){}	
+	Stack(const initializer_list<int>& il) :ForwardList(il) {}
+	
+	void pop()
+	{
+		pop_front();
+	}
+	void push(int data)
+	{
+		push_front(data);
+	}
+	int peek()
+	{
+		Element* Temp = get_Head();
+		return Temp->get_Data();
+	}
+};
+
 
 //#define BASE CHECK
 //#define DESTRUCTOR_CHECK
@@ -520,14 +549,25 @@ int main()
 	cout << endl;
 #endif // RANGE_BASE_FORARRAY
 
-	ForwardList list9 = { 3,5,8,13,21 };
+	/*ForwardList list9 = { 3,5,8,13,21 };
 	for (int i : list9)
 	{
 		cout << i << tab;
 	}
-	cout << endl;
-
-
+	cout << endl;*/
+	Stack s{};
+	for (size_t i = 0; i < 10; i++)
+	{
+		s.push(i);
+		cout << s.peek() << endl;
+	}
+	cout << s.peek()<<endl;
+	for (size_t i = 0; i < 10; i++)
+	{		
+		cout << s.peek() << endl;
+		s.pop();
+	}
+	
 	return 0;
 }
 

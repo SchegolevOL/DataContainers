@@ -45,6 +45,7 @@ int main()
 #endif //  BASE_CHEK
 	List<int> list3 = { 3, 5, 8, 13, 21 };
 	list3.print();
+
 	for (int i : list3)cout << i << tab; 
 	cout << endl;
 
@@ -65,6 +66,13 @@ int main()
 	for (List<string>::ReverseIterator it = s_list.rbegin(); it; ++it)
 		cout << *it << endl;
 
+	try
+	{
 
+	}
+	catch (const std::exception&)
+	{
+
+	}
 	return 0;
 }

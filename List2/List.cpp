@@ -254,6 +254,14 @@ template<typename T> typename List<T>::ReverseIterator List<T>::rend()//for
 {
 	return nullptr;
 }
+template<typename T> void  List<T>::get_Head()
+{
+	return Head;
+}
+template<typename T> void  List<T>:: get_Tail()
+{
+	return Tail;
+}
 //-------------------------------------------------------------------------------------------------
 
 //----------ReverseIterator-------------------------------------------------------------------------
@@ -430,5 +438,20 @@ template<typename T> List<T>::Element::~Element()
 	cout << "EDestructor : \t" << this << endl;
 #endif // DEBUG
 
+}
+//--------------------------------------------------------------------------------------------------
+
+//------------class Queue---------------------------------------------------------------------------
+template<typename T> void Queue<T>:: pop()
+{
+	List<T>::pop_front();
+}
+template<typename T> void Queue<T>:: push(T data)
+{
+	List<T>::push_and(data);
+}
+template<typename T>  typename T Queue<T>::peek()
+{
+	return List<T>::get_Tail()->get_Data();
 }
 //--------------------------------------------------------------------------------------------------

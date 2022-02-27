@@ -14,15 +14,21 @@ template<typename T> class List
 		Element* pNext;//Адрес следующего элемента
 		Element* pPrev;//Адрес предыдущего элемента
 	public:
+		
 		//----------Constructor----------
 		Element(T Data, Element* pNext = nullptr, Element* pPrev = nullptr);
 		//----------Destructor----------
 		~Element();
 		friend class List<T>;
 		friend class ConstIterator;
+		//friend Queue;
+
 	}*Head, * Tail;//Element* Temp; Element* Tail; тоже самое
 
-
+	void get_Head();
+	 
+	void get_Tail();
+	
 	class BaseIterator
 	{
 	protected:
@@ -107,7 +113,7 @@ public:
 	List(const initializer_list<T>& il);
 
 	//----------Destructor----------
-	~List();
+	virtual ~List();
 
 	//---------------Addingng elements-------------------
 	void push_front(T Data);
@@ -131,5 +137,22 @@ public:
 	Iterator end();
 	ReverseIterator rbegin();
 	ReverseIterator rend();
+
+	
+	
+
 };
 
+template<typename T>
+	class Queue: public List
+	{
+	public:
+		Queue() :List() {}		
+		Queue(const Queue& other) : List(other) {}		
+		Queue(const initializer_list<T>& il) :List(il) {}
+		Queue(Queue&& other)noexcept :List(other) {}
+		
+		void pop();
+		void push(T data);
+		T peek();
+	};

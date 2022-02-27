@@ -3,6 +3,7 @@
 
 
 //#define BASE_CHEK
+//#define LIST2
 int main()
 {
 	SetConsoleCP(1251);
@@ -43,13 +44,14 @@ int main()
 	List<int> list2 = { 3, 5, 8, 13, 21 };
 	for (int i : list2)cout << i << tab; cout << endl;
 #endif //  BASE_CHEK
+#ifdef LIST2
 	List<int> list3 = { 3, 5, 8, 13, 21 };
 	list3.print();
 
-	for (int i : list3)cout << i << tab; 
+	for (int i : list3)cout << i << tab;
 	cout << endl;
 
-	for (List<int> :: ConstReverseIterator it = list3.crbegin(); it ; ++it)
+	for (List<int> ::ConstReverseIterator it = list3.crbegin(); it; ++it)
 	{
 		cout << *it << tab;
 	}
@@ -65,14 +67,23 @@ int main()
 	for (string i : s_list)cout << i; cout << endl;
 	for (List<string>::ReverseIterator it = s_list.rbegin(); it; ++it)
 		cout << *it << endl;
+#endif // LIST2
 
-	try
-	{
-
+	Queue<int> q;
+	for (size_t i = 0; i < 10; i++)
+	{		
+		q.push(i);
+		q.peek();
 	}
-	catch (const std::exception&)
+	for (size_t i = 0; i < 10; i++)
 	{
-
+		q.peek();
+		q.pop();
 	}
+
+
+
+
+	
 	return 0;
 }

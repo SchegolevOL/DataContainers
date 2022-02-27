@@ -140,11 +140,10 @@ public:
 
 	
 	
-
 };
 
 template<typename T>
-	class Queue: public List
+	class Queue: List
 	{
 	public:
 		Queue() :List() {}		

@@ -11,9 +11,6 @@ using namespace std;
 
 class Tree
 {
-
-
-
 	class Element
 	{
 		int Data;
@@ -61,7 +58,7 @@ public:
 		cout << "TDConstructor:\t" << this << endl;
 #endif // DEBUG
 	}
-
+private:
 	void insert(int Data, Element* Root)//Рекурсивное добавление элемента в бинарное дерево
 	{
 		if (this->Root == nullptr)
@@ -81,38 +78,49 @@ public:
 			else insert(Data, Root->pRight);
 		}
 	}
-void print(Element* Root)
+
+	void print(Element* Root)const
 	{
 		if (Root == nullptr)return;
-		cout <<"<" << Root->Data<<">" << tab;
+		
 		print(Root->pLeft);
 		cout << Root->Data << tab;
 		print(Root->pRight);
 		
 	}
-private:
-	int minValue(Element* tmp)
+
+	int minValue(Element* tmp)const
 	{	
-		return tmp->pLeft == nullptr ? tmp->Data : minValue(tmp->pLeft);		
+		return tmp->pLeft ? minValue(tmp->pLeft) : tmp->Data ;		
 	}
-	int maxValue(Element* tmp)
+	int maxValue(Element* tmp)const
 	{
-		return tmp->pRight == nullptr ? tmp->Data : maxValue(tmp->pRight);
+		return tmp->pRight ? maxValue(tmp->pRight) : tmp->Data;
 	}
-	int size(Element* Root,int s)
-	{
-		
-		if (Root == nullptr) return s;
-		
-		size(Root->pLeft,s);
-		s = s + 1;
-		size(Root->pRight,s);
-		
+	int size(Element* tmp,int s)
+	{		
+		if (tmp == nullptr) return s;
+		s = size(tmp->pLeft, s) + 1;
+		s = size(tmp->pRight, s);		
 		return s;
+	}
+	int sum(Element* tmp, int s)
+	{
+		if (tmp == nullptr) return s;
+		s = sum(tmp->pLeft, s) + tmp->Data;
+		s = sum(tmp->pRight, s);
+		return s;
+	}
+	double avg(Element* tmp)
+	{
+		return (double)(sum(tmp, 0)) / size(tmp, 0);
+	}
+	void erase(int Data, Element* tmp)
+	{
 
 	}
 public:
-	int minValue()
+	int minValue()const
 	{
 		/*if (Root == nullptr) return-1;
 		int min = Root->Data;
@@ -123,10 +131,10 @@ public:
 			tmp = tmp->pLeft;
 		}
 		return min;*/
-		if (Root == nullptr) return -1;
+		if (Root == nullptr) return 0;
 		return minValue(this->Root);		
 	}
-	int maxValue()
+	int maxValue()const
 	{
 		/*if (Root == nullptr) return-1;
 		int max = Root->Data;
@@ -136,37 +144,37 @@ public:
 			max = tmp->Data;
 			tmp = tmp->pRight;
 		}*/
-		if (Root == nullptr) return -1;
+		if (Root == nullptr) return 0;
 		return maxValue(this->Root);
+	}
+	void print()const
+	{
+		print(this->Root);
+	}
+	void insert(int Data)
+	{
+		insert(Data, this->Root);
 	}
 	int size()
 	{
 		return size(this->Root, 0);
 	}
-
-
-
-
-
 	int sum()
 	{
-		if (Root == nullptr) return 0;
-		int sum = Root->Data;
-		Element* tmp = Root->pLeft;
-		while (tmp)
-		{
-			sum = sum + tmp->Data;
-			tmp = tmp->pLeft;
-		}
-		tmp = Root->pRight;
-		while (tmp)
-		{
-			sum = sum + tmp->Data;
-			tmp = tmp->pRight;
-		}
-		return sum;	
+		return sum(this->Root, 0);
+	}
+	double avg()
+	{
+		return avg(this->Root);
+	}
+	void erase(int Data)
+	{
+		erase(Data, this->Root);
 	}
 
+
+
+	
 };
 
 int main()
@@ -182,15 +190,15 @@ int main()
 	Tree tree;
 	for (size_t i = 0; i < n; i++)
 	{
-		tree.insert((rand() % 100)+1, tree.getRoot());
+		tree.insert((rand() % 100)+1);
 	}
-	tree.print(tree.getRoot());
+	tree.print();
 	cout << endl;
 	cout << tree.minValue()<<endl;
 	cout << tree.maxValue() << endl;
 	cout << tree.size() << endl;
-
-
+	cout << tree.sum() << endl;
+	cout << tree.avg() << endl;
 
 	return 0;
 }

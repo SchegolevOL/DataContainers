@@ -12,16 +12,30 @@ double power(double a, int n)
 {
 	return n < 1 ? 1 : power(a, n - 1) * a;
 }
-
+void elevator(int floor)
+{
+	if (floor == 0)
+	{
+		cout << "Подвал" << endl;
+		return;
+	}
+	
+	elevator(floor-1);
+	cout << "Вы на " << floor << " этаже" << endl;
+}
 
 int main()
 {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
-	int a = 5;
+	/*int a = 5;
 	cout << faktorial(a) << endl;
 	int n = 2;
-	cout << power(a, n) << endl;
+	cout << power(a, n) << endl;*/
+
+	int floor; cin >> floor;
+	elevator(floor);
+
 
 	return 0;
 }
